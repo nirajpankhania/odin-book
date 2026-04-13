@@ -1,0 +1,11 @@
+<%- include('../partials/header') %>
+
+<h1>Welcome, <%= user.displayName %>!</h1>
+<img src="<%= user.avatarUrl %>" alt="avatar" width="50">
+
+<form action="/auth/logout" method="POST">
+  <button type="submit">Log out</button>
+</form>
+
+</body>
+</html>

@@ -3,6 +3,10 @@ const session = require('express-session');
 const path = require('path');
 require('dotenv').config();
 
+const passport = require('./src/config/passport');
+const authRoutes = require('./src/routes/auth');
+const { isAuthenticated } = require('./src/middleware/auth');
+
 const app = express();
 
 //view engine
@@ -20,9 +24,22 @@ app.use(session({
     saveUninitialized: true,
 }));
 
-//test route
-app.get('/', (req, res) => {
-    res.send('odin book is alive');
+//passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+//routes
+app.use('/auth', authRoutes);
+
+app.get('/login', (req, res) => {
+    if (req.isAuthenticated()) {
+        return res.redirect('/');
+    }
+    res.render('pages/login');
+});
+
+app.get('/', isAuthenticated, (req, res) => {
+    res.render('pages/home', { user: req.user });
 });
 
 const PORT = process.env.PORT || 3000;
