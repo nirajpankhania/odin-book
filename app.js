@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const passport = require('./src/config/passport');
 const authRoutes = require('./src/routes/auth');
+const userRoutes = require('./src/routes/users');
 const { isAuthenticated } = require('./src/middleware/auth');
 
 const app = express();
@@ -28,8 +29,15 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// make current user available in all views
+app.use((req, res, next) => {
+    res.locals.currentUser = req.user || null;
+    next();
+});
+
 //routes
 app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
 
 app.get('/login', (req, res) => {
     if (req.isAuthenticated()) {

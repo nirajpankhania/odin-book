@@ -1,11 +1,9 @@
 <%- include('../partials/header') %>
 
-<h1>Welcome, <%= user.displayName %>!</h1>
-<img src="<%= user.avatarUrl %>" alt="avatar" width="50">
-
-<form action="/auth/logout" method="POST">
-  <button type="submit">Log out</button>
-</form>
+<div class="page-container">
+  <h2>Your Feed</h2>
+  <p class="text-muted">Posts from you and people you follow will appear here.</p>
+</div>
 
 </body>
 </html>

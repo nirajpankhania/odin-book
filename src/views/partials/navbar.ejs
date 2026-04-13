@@ -1,0 +1,13 @@
+<nav class="navbar">
+  <a href="/" class="nav-logo">Odin Book</a>
+  <% if (currentUser) { %>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/users">People</a>
+      <a href="/users/<%= currentUser.id %>">Profile</a>
+      <form action="/auth/logout" method="POST" style="display:inline">
+        <button type="submit" class="btn-logout">Log out</button>
+      </form>
+    </div>
+  <% } %>
+</nav>

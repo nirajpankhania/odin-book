@@ -1,0 +1,32 @@
+<%- include('../../partials/header') %>
+
+<div class="page-container">
+  <h2>People</h2>
+
+  <div class="users-list">
+    <% users.forEach(user => { %>
+      <div class="user-card">
+        <img src="<%= user.avatarUrl || '/images/default-avatar.png' %>" alt="avatar" class="avatar-sm">
+        <div class="user-card-info">
+          <a href="/users/<%= user.id %>"><strong>@<%= user.username %></strong></a>
+          <p><%= user.displayName %></p>
+        </div>
+        <div class="user-card-action">
+          <% if (user.followStatus === 'ACCEPTED') { %>
+            <span class="badge">Following</span>
+          <% } else if (user.followStatus === 'PENDING') { %>
+            <span class="badge badge-pending">Pending</span>
+          <% } else { %>
+            <form action="/follows" method="POST">
+              <input type="hidden" name="followingId" value="<%= user.id %>">
+              <button type="submit" class="btn-follow">Follow</button>
+            </form>
+          <% } %>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</div>
+
+</body>
+</html>
