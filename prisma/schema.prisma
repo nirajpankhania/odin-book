@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String    @id @default(cuid())
+  githubId    String    @unique
+  username    String    @unique
+  displayName String
+  avatarUrl   String?
+  bio         String?
+  createdAt   DateTime  @default(now())
+
+  posts       Post[]
+  likes       Like[]
+  comments    Comment[]
+
+  following   Follow[]  @relation("follower")
+  followers   Follow[]  @relation("following")
+}
+
+model Post {
+  id        String    @id @default(cuid())
+  content   String
+  createdAt DateTime  @default(now())
+
+  authorId  String
+  author    User      @relation(fields: [authorId], references: [id])
+
+  likes     Like[]
+  comments  Comment[]
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+
+  @@unique([userId, postId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+}
+
+model Follow {
+  id          String       @id @default(cuid())
+  createdAt   DateTime     @default(now())
+  status      FollowStatus @default(PENDING)
+
+  followerId  String
+  follower    User         @relation("follower", fields: [followerId], references: [id])
+
+  followingId String
+  following   User         @relation("following", fields: [followingId], references: [id])
+
+  @@unique([followerId, followingId])
+}
+
+enum FollowStatus {
+  PENDING
+  ACCEPTED
+}
