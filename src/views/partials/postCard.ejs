@@ -1,0 +1,53 @@
+<div class="post-card">
+  <div class="post-header">
+    <img src="<%= post.author.avatarUrl || '/images/default-avatar.png' %>" alt="avatar" class="avatar-sm">
+    <div>
+      <a href="/users/<%= post.author.id %>" class="post-author"><%= post.author.displayName %></a>
+      <span class="text-muted">@<%= post.author.username %></span>
+      <span class="text-muted"> · <%= post.createdAt.toDateString() %></span>
+    </div>
+  </div>
+
+  <p class="post-content"><%= post.content %></p>
+
+  <div class="post-actions">
+    <!-- Like button -->
+    <form action="/posts/<%= post.id %>/like" method="POST">
+      <% const hasLiked = post.likes.some(l => l.userId === currentUser.id); %>
+      <button type="submit" class="btn-action <%= hasLiked ? 'liked' : '' %>">
+        <%= hasLiked ? '❤️' : '🤍' %> <%= post.likes.length %>
+      </button>
+    </form>
+
+    <!-- Comment count -->
+    <span class="btn-action">💬 <%= post.comments.length %></span>
+
+    <!-- Delete button (only for author) -->
+    <% if (post.author.id === currentUser.id) { %>
+      <form action="/posts/<%= post.id %>/delete" method="POST">
+        <button type="submit" class="btn-action btn-delete">🗑️ Delete</button>
+      </form>
+    <% } %>
+  </div>
+
+  <!-- Comments section -->
+  <% if (post.comments.length > 0) { %>
+    <div class="comments-list">
+      <% post.comments.forEach(comment => { %>
+        <div class="comment">
+          <img src="<%= comment.author.avatarUrl || '/images/default-avatar.png' %>" alt="avatar" class="avatar-xs">
+          <div>
+            <a href="/users/<%= comment.author.id %>" class="comment-author"><%= comment.author.username %></a>
+            <span class="comment-content"><%= comment.content %></span>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <!-- Add comment form -->
+  <form action="/posts/<%= post.id %>/comments" method="POST" class="comment-form">
+    <input type="text" name="content" placeholder="Add a comment..." class="comment-input">
+    <button type="submit" class="btn-comment">Post</button>
+  </form>
+</div>
