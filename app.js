@@ -7,6 +7,7 @@ const passport = require('./src/config/passport');
 const authRoutes = require('./src/routes/auth');
 const userRoutes = require('./src/routes/users');
 const postRoutes = require('./src/routes/posts');
+const followsRoutes = require('./src/routes/follows');
 const { isAuthenticated } = require('./src/middleware/auth');
 const { getFeed } = require('./src/controllers/postController');
 
@@ -41,6 +42,7 @@ app.use((req, res, next) => {
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
+app.use('/follows', followsRoutes);
 
 app.get('/login', (req, res) => {
     if (req.isAuthenticated()) {

@@ -1,0 +1,32 @@
+<%- include('../../partials/header') %>
+
+<div class="page-container">
+  <h2>Follow Requests</h2>
+
+  <% if (requests.length === 0) { %>
+    <p class="text-muted" style="margin-top:1rem">No pending follow requests.</p>
+  <% } else { %>
+    <div class="users-list" style="margin-top:1rem">
+      <% requests.forEach(req => { %>
+        <div class="user-card">
+          <img src="<%= req.follower.avatarUrl || '/images/default-avatar.png' %>" alt="avatar" class="avatar-sm">
+          <div class="user-card-info">
+            <a href="/users/<%= req.follower.id %>"><strong>@<%= req.follower.username %></strong></a>
+            <p><%= req.follower.displayName %></p>
+          </div>
+          <div class="user-card-action" style="display:flex; gap:0.5rem">
+            <form action="/follows/<%= req.follower.id %>/accept" method="POST">
+              <button type="submit" class="btn-follow">Accept</button>
+            </form>
+            <form action="/follows/<%= req.follower.id %>/reject" method="POST">
+              <button type="submit" class="btn-action btn-delete">Decline</button>
+            </form>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+
+</body>
+</html>
