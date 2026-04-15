@@ -26,7 +26,7 @@ const sendFollowRequest = async (req, res, next) => {
                 data: {
                     followerId: req.user.id,
                     followingId,
-                    status: 'PENDING'
+                    status: 'ACCEPTED' // for simplicity, auto-accept all follow requests
                 }
             });
         }
