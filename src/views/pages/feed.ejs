@@ -1,35 +1,49 @@
 <%- include('../partials/header') %>
 
-<div class="page-container">
-
-  <!-- New post form -->
-  <div class="new-post-form">
-    <img src="<%= currentUser.avatarUrl || '/images/default-avatar.png' %>" alt="avatar" class="avatar-sm">
-    <form action="/posts" method="POST" class="post-form">
-      <textarea name="content" placeholder="What's happening?" class="post-textarea" maxlength="280"></textarea>
-      <div class="post-form-footer">
-        <span class="char-count">280</span>
-        <button type="submit" class="btn-post">Post</button>
-      </div>
-    </form>
-  </div>
-
-  <div class="divider"></div>
-
-  <!-- Posts feed -->
-  <% if (posts.length === 0) { %>
-    <div class="empty-feed">
-      <p>No posts yet!</p>
-      <p class="text-muted">Follow some people or create your first post.</p>
-      <a href="/users" class="btn-follow" style="display:inline-block; margin-top:1rem; text-decoration:none;">Find people to follow</a>
-    </div>
-  <% } else { %>
-    <% posts.forEach(post => { %>
-      <%- include('../partials/postCard', { post, currentUser }) %>
-    <% }) %>
-  <% } %>
-
+<div class="page-header">
+  <h2>Home</h2>
 </div>
 
-</body>
-</html>
+<div class="composer">
+  <img src="<%= currentUser.avatarUrl || '/images/default-avatar.png' %>" alt="avatar" class="avatar-sm">
+  <form action="/posts" method="POST" class="composer-body">
+    <textarea
+      name="content"
+      placeholder="What's happening?"
+      class="composer-textarea"
+      maxlength="280"
+      id="postTextarea"
+    ></textarea>
+    <div class="composer-footer">
+      <span class="char-count" id="charCount">280</span>
+      <button type="submit" class="btn-post">Post</button>
+    </div>
+  </form>
+</div>
+
+<% if (posts.length === 0) { %>
+  <div class="empty-state">
+    <div class="empty-state-icon">◈</div>
+    <h3>Your feed is empty</h3>
+    <p>Follow some people to see their posts here</p>
+    <a href="/users" class="btn-follow" style="margin-top:1rem; display:inline-block">Find people</a>
+  </div>
+<% } else { %>
+  <% posts.forEach(post => { %>
+    <%- include('../partials/postCard', { post, currentUser }) %>
+  <% }) %>
+<% } %>
+
+<script>
+  const textarea = document.getElementById('postTextarea');
+  const counter = document.getElementById('charCount');
+  if (textarea) {
+    textarea.addEventListener('input', () => {
+      const remaining = 280 - textarea.value.length;
+      counter.textContent = remaining;
+      counter.className = 'char-count' + (remaining < 20 ? ' danger' : remaining < 50 ? ' warning' : '');
+    });
+  }
+</script>
+
+<%- include('../partials/footer') %>

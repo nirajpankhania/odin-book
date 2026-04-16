@@ -1,53 +1,69 @@
 <div class="post-card">
   <div class="post-header">
     <img src="<%= post.author.avatarUrl || '/images/default-avatar.png' %>" alt="avatar" class="avatar-sm">
-    <div>
+    <div class="post-header-info">
       <a href="/users/<%= post.author.id %>" class="post-author"><%= post.author.displayName %></a>
-      <span class="text-muted">@<%= post.author.username %></span>
-      <span class="text-muted"> · <%= post.createdAt.toDateString() %></span>
+      <span class="post-handle">@<%= post.author.username %></span>
+      <span class="post-dot">·</span>
+      <span class="post-date"><%= post.createdAt.toDateString() %></span>
     </div>
   </div>
 
   <p class="post-content"><%= post.content %></p>
 
   <div class="post-actions">
-    <!-- Like button -->
     <form action="/posts/<%= post.id %>/like" method="POST">
       <% const hasLiked = post.likes.some(l => l.userId === currentUser.id); %>
       <button type="submit" class="btn-action <%= hasLiked ? 'liked' : '' %>">
-        <%= hasLiked ? '❤️' : '🤍' %> <%= post.likes.length %>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="<%= hasLiked ? 'currentColor' : 'none' %>" stroke="currentColor" stroke-width="2">
+          <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+        </svg>
+        <%= post.likes.length %>
       </button>
     </form>
 
-    <!-- Comment count -->
-    <span class="btn-action">💬 <%= post.comments.length %></span>
+    <span class="btn-action">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+      </svg>
+      <%= post.comments.length %>
+    </span>
 
-    <!-- Delete button (only for author) -->
     <% if (post.author.id === currentUser.id) { %>
       <form action="/posts/<%= post.id %>/delete" method="POST">
-        <button type="submit" class="btn-action btn-delete">🗑️ Delete</button>
+        <button type="submit" class="btn-action btn-delete">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2"/>
+          </svg>
+        </button>
       </form>
     <% } %>
   </div>
 
-  <!-- Comments section -->
   <% if (post.comments.length > 0) { %>
-    <div class="comments-list">
-      <% post.comments.forEach(comment => { %>
-        <div class="comment">
-          <img src="<%= comment.author.avatarUrl || '/images/default-avatar.png' %>" alt="avatar" class="avatar-xs">
-          <div>
-            <a href="/users/<%= comment.author.id %>" class="comment-author"><%= comment.author.username %></a>
-            <span class="comment-content"><%= comment.content %></span>
+    <div class="comments-section">
+      <div class="comments-list">
+        <% post.comments.forEach(comment => { %>
+          <div class="comment">
+            <img src="<%= comment.author.avatarUrl %>" alt="avatar" class="avatar-xs">
+            <div class="comment-bubble">
+              <a href="/users/<%= comment.author.id %>" class="comment-author">@<%= comment.author.username %></a>
+              <span class="comment-content"><%= comment.content %></span>
+            </div>
           </div>
-        </div>
-      <% }) %>
+        <% }) %>
+      </div>
+      <form action="/posts/<%= post.id %>/comments" method="POST" class="comment-form">
+        <input type="text" name="content" placeholder="Reply..." class="comment-input">
+        <button type="submit" class="btn-comment">Reply</button>
+      </form>
+    </div>
+  <% } else { %>
+    <div class="comments-section">
+      <form action="/posts/<%= post.id %>/comments" method="POST" class="comment-form">
+        <input type="text" name="content" placeholder="Add a reply..." class="comment-input">
+        <button type="submit" class="btn-comment">Reply</button>
+      </form>
     </div>
   <% } %>
-
-  <!-- Add comment form -->
-  <form action="/posts/<%= post.id %>/comments" method="POST" class="comment-form">
-    <input type="text" name="content" placeholder="Add a comment..." class="comment-input">
-    <button type="submit" class="btn-comment">Post</button>
-  </form>
 </div>
