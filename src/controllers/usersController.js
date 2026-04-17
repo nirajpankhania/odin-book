@@ -41,9 +41,11 @@ const getUserProfile = async (req, res, next) => {
                 posts: {
                     orderBy: { createdAt: 'desc' },
                     include: {
+                        author: true,
                         likes: true,
                         comments: {
-                            include: { author: true }
+                            include: { author: true },
+                            orderBy: {createdAt: "asc"}
                         }
                     }
                 },
